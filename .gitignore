@@ -1,0 +1,8 @@
+.vscode
+.venv
+__pycache__
+
+demo.py
+styles/main.tcss
+*.png
+*.txt

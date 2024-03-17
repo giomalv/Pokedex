@@ -1,0 +1,14 @@
+#pokemon-list{
+    height:100%;
+    width:50;
+    dock:left;
+}
+
+#pokemon-portrait-loading{
+
+}
+
+.loading{
+    display:block;
+}
+
