@@ -13,7 +13,9 @@ import random
 ##DEBUG List, for use before we implement grabbing data via PokeAPI
 DEBUG_POKEMON_LIST = ["Urshifu", "Pikachu","Charmander","Bulbasaur","Squirtle","Jigglypuff","Meowth","Psyduck","Mewtwo","Mew","Gengar","Gyarados","Lapras","Eevee","Vaporeon","Jolteon","Flareon","Espeon","Umbreon","Leafeon","Glaceon","Sylveon","Grimmsnarl","Toxtricity","Corviknight","Cinderace","Inteleon","Rillaboom","Zacian","Zamazenta","Eternatus","Urshifu","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex"]
 
-POKEMON_LIST = get_pokemon_list()
+INITIAL_POKEMON_LIST = get_pokemon_list()
+
+
 
 class PokePortraitWidget(Static):
     image_path: Reactive[str] = Reactive("")
@@ -33,9 +35,20 @@ class PokePortraitWidget(Static):
         self.query_one("#pokemon-portrait",Label).update(pixels)
 
 class PokemonList(Static):
+    search_query: Reactive[str] = Reactive("")
+
     def compose(self) -> ComposeResult:
-        yield Input("Search", id="search")
-        yield OptionList(*POKEMON_LIST, id="pokemon-option-select")
+        yield Input(placeholder="Search", id="search")
+        yield OptionList(*INITIAL_POKEMON_LIST, id="pokemon-option-select")
+
+    def update_pokemon_list(self,query:str):
+         appyWappy.pokemon_list = list(filter(lambda pokemon: self.search_query.lower() in pokemon.lower(), INITIAL_POKEMON_LIST))
+    
+    def watch_search_query(self, query:str) -> None:
+        self.query_one("#pokemon-option-select", OptionList).clear_options()
+        self.update_pokemon_list(query)
+        self.query_one("#pokemon-option-select", OptionList).add_options(appyWappy.pokemon_list)
+        print(self.search_query)
 
 class CachePrompt(ModalScreen):
     def compose(self) -> ComposeResult:
@@ -79,6 +92,8 @@ class PykedexApp(App):
 
     CSS_PATH = "styles/poke.tcss"
 
+    pokemon_list = INITIAL_POKEMON_LIST
+
     def __init__(self) -> None:
         self.main_container = MainContainer()
         super().__init__()
@@ -92,13 +107,18 @@ class PykedexApp(App):
     
     @on(OptionList.OptionSelected, "#pokemon-option-select")
     def handle_selection_change(self, event:OptionList.OptionSelected) -> None:
-        print(POKEMON_LIST[event.option_index])
+        # print(POKEMON_LIST[event.option_index])
         #Update the selected pokemon in the main container. IT uses a reactive variable so it should update automatically
-        self.main_container.selected_pokemon = POKEMON_LIST[event.option_index]
+        self.main_container.selected_pokemon = appyWappy.pokemon_list[event.option_index]
         # self.main_container.query_one("#selected-pokemon-label", Label).update(POKEMON_LIST[event.option_index])
 
+    @on(Input.Changed, "#search")
+    def handle_search_change(self,event:Input.Changed)-> None:
+        self.query_one("#pokemon-list",PokemonList).search_query = event.value
+
+
     def action_random_selection(self) -> None:
-        self.main_container.selected_pokemon = random.choice(POKEMON_LIST)
+        self.main_container.selected_pokemon = random.choice(appyWappy.pokemon_list)
     
     def action_make_cache(self) -> None:
         self.push_screen(CachePrompt())

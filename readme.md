@@ -9,9 +9,9 @@ Still heavily WIP, i've only implemented some base functionality so far
 - [ ] ... and many more
 
 ## Features 
-- [x] Show list of selectable Pokémon
-- [ ] Search list of pokemon
-- [x] Show Pokémon images 
+- [X] Show list of selectable Pokémon
+- [X] Search list of pokemon
+- [X] Show Pokémon images 
 - [ ] Show Pokémon stats
 - [ ] Filter list of pokemon
 - [ ] Export ANSI images of Pokémon
