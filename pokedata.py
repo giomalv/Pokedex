@@ -38,7 +38,7 @@ def get_single_pokemon(lookup:str) -> Tuple[Optional[str], Optional[str], Option
         height = getattr(pokemon, "height", "Unknown!")
         weight = getattr(pokemon, "weight", "Unknown!")
         sprite_url = getattr(getattr(pokemon, "sprites", None), "front_default", "Unknown!")
-        sprite_data = image_loader.load_from_url(sprite_url, (25,25))
+        sprite_data = image_loader.load_from_url(sprite_url)
         serialise_image_data(sprite_data,lookup)
         sprite_path = f"pokecache/{lookup}.pokeimg"
         
