@@ -4,7 +4,9 @@ from textual.widgets import Header, Footer, OptionList, Label, Static
 from textual.reactive import Reactive
 from textual import on
 from pokedata import get_single_pokemon, get_pokemon_list
+
 import pickle as gherkin
+import random
 
 ##DEBUG List, for use before we implement grabbing data via PokeAPI
 DEBUG_POKEMON_LIST = ["Urshifu", "Pikachu","Charmander","Bulbasaur","Squirtle","Jigglypuff","Meowth","Psyduck","Mewtwo","Mew","Gengar","Gyarados","Lapras","Eevee","Vaporeon","Jolteon","Flareon","Espeon","Umbreon","Leafeon","Glaceon","Sylveon","Grimmsnarl","Toxtricity","Corviknight","Cinderace","Inteleon","Rillaboom","Zacian","Zamazenta","Eternatus","Urshifu","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex"]
@@ -52,7 +54,8 @@ class MainContainer(Static):
               
 class PykedexApp(App):
     BINDINGS = [("v","toggle_dark","Dark Mode Toggle"),
-                ("q","quit","Quit")]
+                ("q","quit","Quit"),
+                ("r","random_selection", "Random Pokémon")]
 
     CSS_PATH = "styles/poke.tcss"
 
@@ -72,6 +75,10 @@ class PykedexApp(App):
         #Update the selected pokemon in the main container. IT uses a reactive variable so it should update automatically
         self.main_container.selected_pokemon = POKEMON_LIST[event.option_index]
         # self.main_container.query_one("#selected-pokemon-label", Label).update(POKEMON_LIST[event.option_index])
+
+    def action_random_selection(self) -> None:
+        self.main_container.selected_pokemon = random.choice(POKEMON_LIST)
+
 
 
 appyWappy = PykedexApp()
