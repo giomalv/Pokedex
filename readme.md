@@ -1,6 +1,8 @@
 ## Pokédex TUI
 A TUI Pokédex built on Textual, using the PokéAPI for Pokémon data and images 
 
+![Pykedex Interface](./demo.gif)
+
 Still heavily WIP, i've only implemented some base functionality so far
 
 ## Issues
