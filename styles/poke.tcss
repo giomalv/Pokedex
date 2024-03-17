@@ -2,6 +2,66 @@
     height:99%;
     width:50;
     dock:left;
+    background:#aab7bf;
+}
+
+MainContainer{
+    background: #bfb1a8;
+    color:#261201;
+    height:100%;
+    padding:10;
+}
+
+#pokemon-list OptionList{
+    margin-top:1;
+    color:#261201;
+    height:91%;
+    scrollbar-background:#261201;
+    scrollbar-background-hover:#261201;
+    scrollbar-color:#ad1d1d;
+    scrollbar-color-hover:#ad1d1d;
+    scrollbar-color-active:#bfb1a8;
+}
+
+OptionList {
+    height: auto;
+    max-height: 100%;
+    background: $boost;
+    color: $text;
+    overflow-x: hidden;
+    border: tall transparent;
+    padding: 0 1;
+}
+
+#pokemon-list OptionList:focus {
+    border: tall #ad1d1d;
+
+}
+
+#pokemon-list OptionList:focus > .option-list--option-highlighted {
+    background: #ad1d1d;
+}
+
+#pokemon-list OptionList > .option-list--option-hover {
+    background: #bfb1a8;
+}
+
+#pokemon-list OptionList:focus > .option-list--option-hover-highlighted {
+    background: #ad1d1d;
+}
+
+#search{
+    margin-top:1;
+     border: tall #261201;
+}
+
+#search:focus {
+    border: tall #ad1d1d;
+}
+#search>.input--cursor {
+    background: #ad1d1d;
+    color: $text;
+    text-style: none;
 }
 
 .loading{
@@ -33,4 +93,23 @@ CachePrompt {
 
 Button {
     width: 100%;
+}
+
+Footer {
+    background: #261201;
+    color: $text;
+    dock: bottom;
+    height: 1;
+}
+
+Footer > .footer--highlight {
+    background: #ad1d1d;
+}
+
+Footer > .footer--highlight-key {
+    background: #bfb1a8;
+}
+
+Footer > .footer--key {
+    background: #ad1d1d;
 }

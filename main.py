@@ -85,8 +85,7 @@ class MainContainer(Static):
         self.pokeportrait_widget.image_path = image_path
               
 class PykedexApp(App):
-    BINDINGS = [("v","toggle_dark","Dark Mode Toggle"),
-                ("q","quit","Quit"),
+    BINDINGS = [("q","quit","Quit"),
                 ("r","random_selection", "Random Pokémon"),
                 ("m","make_cache", "Cache All Pokémon")]
 
@@ -100,7 +99,6 @@ class PykedexApp(App):
     
     def compose(self) -> ComposeResult:
         yield Footer()
-        yield Header()
         yield PokemonList(id="pokemon-list")
 
         yield self.main_container
