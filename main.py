@@ -1,9 +1,11 @@
 
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, OptionList, Label, Static
+from textual.widgets import Header, Footer, OptionList, Label, Static, Button
+from textual.containers import Grid
 from textual.reactive import Reactive
+from textual.screen import ModalScreen
 from textual import on
-from pokedata import get_single_pokemon, get_pokemon_list
+from pokedata import get_single_pokemon, get_pokemon_list, cache_them_all
 
 import pickle as gherkin
 import random
@@ -33,6 +35,21 @@ class PokePortraitWidget(Static):
 class PokemonList(OptionList):
     pass
 
+class CachePrompt(ModalScreen):
+    def compose(self) -> ComposeResult:
+        yield Grid(
+            Label("Creating a full Pokémon cache will take a long time.\n\nAre you sure?", id="question"),
+            Button("Yes", variant="warning", id="yes"),
+            Button("Cancel", variant="primary", id="cancel"),
+            id="dialog"
+        )
+
+    def on_button_pressed(self, event:Button.Pressed):
+        if event.button.id == "yes":
+            cache_them_all()
+        else:
+            self.app.pop_screen()
+
 class MainContainer(Static):
     selected_pokemon: Reactive[str] = Reactive("")
 
@@ -55,7 +72,8 @@ class MainContainer(Static):
 class PykedexApp(App):
     BINDINGS = [("v","toggle_dark","Dark Mode Toggle"),
                 ("q","quit","Quit"),
-                ("r","random_selection", "Random Pokémon")]
+                ("r","random_selection", "Random Pokémon"),
+                ("m","make_cache", "Cache All Pokémon")]
 
     CSS_PATH = "styles/poke.tcss"
 
@@ -78,6 +96,9 @@ class PykedexApp(App):
 
     def action_random_selection(self) -> None:
         self.main_container.selected_pokemon = random.choice(POKEMON_LIST)
+    
+    def action_make_cache(self) -> None:
+        self.push_screen(CachePrompt())
 
 
 

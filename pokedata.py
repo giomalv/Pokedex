@@ -49,6 +49,11 @@ def get_single_pokemon(lookup:str) -> Tuple[Optional[str], Optional[str], Option
 
     return weight, height, sprite_url, sprite_path
 
+def cache_them_all():
+    list = get_pokemon_list()
+    for pokemon in list:
+        get_single_pokemon(pokemon)
+
 if __name__ == "__main__":
     print(get_single_pokemon("Pidgey"))
     # all = str(get_them_all())
