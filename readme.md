@@ -5,7 +5,7 @@ Still heavily WIP, i've only implemented some base functionality so far
 
 ## Issues
 - [ ] Grabbing API data blocks program processing
-- [ ] API data not being cached, is a requirement of PokeAPI  
+- [X] Local caching of API data and images 
 - [ ] ... and many more
 
 ## Features 

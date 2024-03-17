@@ -2,6 +2,8 @@
 .venv
 __pycache__
 
+pokecache/*
+
 demo.py
 styles/main.tcss
 *.png

@@ -1,27 +1,32 @@
 
 from textual.app import App, ComposeResult
-from textual.containers import ScrollableContainer
 from textual.widgets import Header, Footer, OptionList, Label, Static
 from textual.reactive import Reactive
-from textual import events,on
-import image_loader
+from textual import on
 from pokedata import get_single_pokemon, get_pokemon_list
+import pickle as gherkin
 
-##DEBUG Constants, for use before we implement grabbing data via PokeAPI
+##DEBUG List, for use before we implement grabbing data via PokeAPI
 DEBUG_POKEMON_LIST = ["Urshifu", "Pikachu","Charmander","Bulbasaur","Squirtle","Jigglypuff","Meowth","Psyduck","Mewtwo","Mew","Gengar","Gyarados","Lapras","Eevee","Vaporeon","Jolteon","Flareon","Espeon","Umbreon","Leafeon","Glaceon","Sylveon","Grimmsnarl","Toxtricity","Corviknight","Cinderace","Inteleon","Rillaboom","Zacian","Zamazenta","Eternatus","Urshifu","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex"]
+
 POKEMON_LIST = get_pokemon_list()
 
 class PokePortraitWidget(Static):
-    image_url: Reactive[str] = Reactive("")
+    image_path: Reactive[str] = Reactive("")
 
     # Displays image of pokemon we grab from the API
     def compose(self) -> ComposeResult:
         yield Label("Pokemon Portrait", id="pokemon-portrait-text")
         yield Label("",id="pokemon-portrait")
         
-    def watch_image_url(self,url:str):
-            pixels = image_loader.load_from_url(self.image_url,(42,42))
-            self.query_one("#pokemon-portrait",Label).update(pixels)
+    def load_pixels(self,path):
+        with open(self.image_path,"rb") as file:
+            pixels = gherkin.load(file)
+            return pixels
+    
+    def watch_image_path(self) -> None:
+        pixels = self.load_pixels(self.image_path)
+        self.query_one("#pokemon-portrait",Label).update(pixels)
 
 class PokemonList(OptionList):
     pass
@@ -41,9 +46,9 @@ class MainContainer(Static):
     
     def watch_selected_pokemon(self, selected:str):
         self.query_one("#selected-pokemon-label", Label).update(selected)
-        weight,height,image = get_single_pokemon(selected.lower())
+        _,_,image,image_path = get_single_pokemon(selected.lower())
         self.pokeportrait_widget.query_one("#pokemon-portrait-text", Label).update(image)
-        self.pokeportrait_widget.image_url = image
+        self.pokeportrait_widget.image_path = image_path
               
 class PykedexApp(App):
     BINDINGS = [("v","toggle_dark","Dark Mode Toggle"),

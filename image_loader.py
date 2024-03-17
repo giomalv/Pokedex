@@ -20,8 +20,6 @@ def load_from_url(url:str, dimensions: Optional[Tuple[int,int]] = None) -> Pixel
     image.save("testing.png")
     
     return pixels
-    
-
 
 if __name__ == "__main__":
     load_from_url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png", (25,25))
