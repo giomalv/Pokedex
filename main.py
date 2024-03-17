@@ -1,6 +1,6 @@
 
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, OptionList, Label, Static, Button
+from textual.widgets import Header, Footer, OptionList, Label, Static, Button, Input
 from textual.containers import Grid
 from textual.reactive import Reactive
 from textual.screen import ModalScreen
@@ -32,8 +32,10 @@ class PokePortraitWidget(Static):
         pixels = self.load_pixels(self.image_path)
         self.query_one("#pokemon-portrait",Label).update(pixels)
 
-class PokemonList(OptionList):
-    pass
+class PokemonList(Static):
+    def compose(self) -> ComposeResult:
+        yield Input("Search", id="search")
+        yield OptionList(*POKEMON_LIST, id="pokemon-option-select")
 
 class CachePrompt(ModalScreen):
     def compose(self) -> ComposeResult:
@@ -84,10 +86,11 @@ class PykedexApp(App):
     def compose(self) -> ComposeResult:
         yield Footer()
         yield Header()
-        yield PokemonList(*POKEMON_LIST, id="pokemon-list")
+        yield PokemonList(id="pokemon-list")
+
         yield self.main_container
     
-    @on(OptionList.OptionSelected, "#pokemon-list")
+    @on(OptionList.OptionSelected, "#pokemon-option-select")
     def handle_selection_change(self, event:OptionList.OptionSelected) -> None:
         print(POKEMON_LIST[event.option_index])
         #Update the selected pokemon in the main container. IT uses a reactive variable so it should update automatically
