@@ -1,11 +1,7 @@
 #pokemon-list{
-    height:100%;
+    height:99%;
     width:50;
     dock:left;
-}
-
-#pokemon-portrait-loading{
-
 }
 
 .loading{
