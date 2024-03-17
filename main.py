@@ -118,8 +118,12 @@ class PykedexApp(App):
 
 
     def action_random_selection(self) -> None:
-        self.main_container.selected_pokemon = random.choice(appyWappy.pokemon_list)
-    
+        random_pokemon = random.choice(appyWappy.pokemon_list)
+        while random_pokemon == self.main_container.selected_pokemon:
+            random_pokemon = random.choice(appyWappy.pokemon_list)
+            
+        self.main_container.selected_pokemon = random_pokemon
+        
     def action_make_cache(self) -> None:
         self.push_screen(CachePrompt())
 
