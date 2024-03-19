@@ -1,6 +1,6 @@
 
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, OptionList, Label, Static, Button, Input
+from textual.widgets import Footer, OptionList, Label, Static, Button, Input, DataTable
 from textual.containers import Grid
 from textual.reactive import Reactive
 from textual.screen import ModalScreen
@@ -22,8 +22,9 @@ class PokePortraitWidget(Static):
 
     # Displays image of pokemon we grab from the API
     def compose(self) -> ComposeResult:
-        yield Label("Pokemon Portrait", id="pokemon-portrait-text")
+        yield Label(id="pokemon-portrait-url")
         yield Label("",id="pokemon-portrait")
+
         
     def load_pixels(self,path):
         with open(self.image_path,"rb") as file:
@@ -74,15 +75,16 @@ class MainContainer(Static):
     
     def compose(self) -> ComposeResult:
         yield Label("Welcome to Pykedex!", id="test-label")
-        yield Label("Select a Pokemon from the list to view its details.", id="instruction-label")
+        yield Label("Select a Pokemon from the list to view its details.\n", id="instruction-label")
+
         yield Label(f"Selected Pokemon:{self.selected_pokemon}", id="selected-pokemon-label")
         yield self.pokeportrait_widget
     
     def watch_selected_pokemon(self, selected:str):
-        self.query_one("#selected-pokemon-label", Label).update(selected)
-        _,_,image,image_path = get_single_pokemon(selected.lower())
-        self.pokeportrait_widget.query_one("#pokemon-portrait-text", Label).update(image)
-        self.pokeportrait_widget.image_path = image_path
+        self.query_one("#selected-pokemon-label", Label).update(f"Selected Pokemon: {selected}")
+        height,weight,image_url,pokeimg_path = get_single_pokemon(selected.lower())
+        self.pokeportrait_widget.query_one("#pokemon-portrait-url", Label).update(f"Image URL: {image_url}")
+        self.pokeportrait_widget.image_path = pokeimg_path
               
 class PykedexApp(App):
     BINDINGS = [("q","quit","Quit"),
