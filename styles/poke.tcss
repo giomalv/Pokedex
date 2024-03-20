@@ -9,7 +9,7 @@ MainContainer{
     background: #bfb1a8;
     color:#261201;
     height:100%;
-    padding:10;
+    padding:1;
 }
 
 #pokemon-list OptionList{
