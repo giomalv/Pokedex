@@ -6,7 +6,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-DEFAULT_DIMENSIONS = (30,30)
+DEFAULT_DIMENSIONS = (48,48)
 
 def load_from_url(url:str, dimensions: Optional[Tuple[int,int]] = DEFAULT_DIMENSIONS) -> Pixels:
     response = requests.get(url)

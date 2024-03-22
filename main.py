@@ -1,7 +1,7 @@
 
 from textual.app import App, ComposeResult
 from textual.widgets import Footer, OptionList, Label, Static, Button, Input, DataTable
-from textual.containers import Grid
+from textual.containers import Grid, ScrollableContainer
 from textual.reactive import Reactive
 from textual.screen import ModalScreen
 from textual import on
@@ -66,7 +66,7 @@ class CachePrompt(ModalScreen):
         else:
             self.app.pop_screen()
 
-class MainContainer(Static):
+class MainContainer(ScrollableContainer):
     selected_pokemon: Reactive[str] = Reactive("")
 
     def __init__(self) -> None:
