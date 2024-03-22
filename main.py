@@ -16,7 +16,6 @@ DEBUG_POKEMON_LIST = ["Urshifu", "Pikachu","Charmander","Bulbasaur","Squirtle","
 INITIAL_POKEMON_LIST = get_pokemon_list()
 
 
-
 class PokePortraitWidget(Static):
     image_path: Reactive[str] = Reactive("")
 
@@ -107,10 +106,7 @@ class PykedexApp(App):
     
     @on(OptionList.OptionSelected, "#pokemon-option-select")
     def handle_selection_change(self, event:OptionList.OptionSelected) -> None:
-        # print(POKEMON_LIST[event.option_index])
-        #Update the selected pokemon in the main container. IT uses a reactive variable so it should update automatically
         self.main_container.selected_pokemon = appyWappy.pokemon_list[event.option_index]
-        # self.main_container.query_one("#selected-pokemon-label", Label).update(POKEMON_LIST[event.option_index])
 
     @on(Input.Changed, "#search")
     def handle_search_change(self,event:Input.Changed)-> None:
