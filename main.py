@@ -1,6 +1,6 @@
 
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, OptionList, Label, Static, Button, Input, DataTable
+from textual.widgets import Footer, OptionList, Label, Static, Button, Input, RadioSet
 from textual.containers import Grid, ScrollableContainer
 from textual.reactive import Reactive
 from textual.screen import ModalScreen
@@ -9,6 +9,7 @@ from pokedata import get_single_pokemon, get_pokemon_list, cache_them_all
 
 import pickle as gherkin
 import random
+from typing import Tuple
 
 ##DEBUG List, for use before we implement grabbing data via PokeAPI
 DEBUG_POKEMON_LIST = ["Urshifu", "Pikachu","Charmander","Bulbasaur","Squirtle","Jigglypuff","Meowth","Psyduck","Mewtwo","Mew","Gengar","Gyarados","Lapras","Eevee","Vaporeon","Jolteon","Flareon","Espeon","Umbreon","Leafeon","Glaceon","Sylveon","Grimmsnarl","Toxtricity","Corviknight","Cinderace","Inteleon","Rillaboom","Zacian","Zamazenta","Eternatus","Urshifu","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Kubfu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex"]
@@ -64,17 +65,23 @@ class CachePrompt(ModalScreen):
             cache_them_all()
         else:
             self.app.pop_screen()
-s
+
 class Settings(ModalScreen):
     def compose(self) -> ComposeResult:
         yield Label("Farts and poo")
         yield Button("Close", id="close")
+        yield RadioSet("Imperial", "Metric", id="unit-selector") 
 
     def on_button_pressed(self, event:Button.Pressed):
         if event.button.id == "close":
             self.app.pop_screen()
+    
+    def on_radio_set_changed(self, event:RadioSet.Changed):
+        self.app.main_container.unit_of_measure = event.pressed.label
+
 class MainContainer(ScrollableContainer):
     selected_pokemon: Reactive[str] = Reactive("")
+    unit_of_measure = "metric"
 
     def __init__(self) -> None:
         self.pokeportrait_widget = PokePortraitWidget()
@@ -86,13 +93,29 @@ class MainContainer(ScrollableContainer):
         yield Label(f"Selected Pokemon:", id="selected-pokemon-label")
         yield Label("Pokémon Weight:", id="pokemon-weight-label") 
         yield Label("Pokémon Height:", id="pokemon-height-label") 
+        yield Label(self.unit_of_measure, id="unit-of-measure")
         yield self.pokeportrait_widget
     
+    def convert_units(self,height:int,weight:int) -> Tuple[str,str]:
+        
+        if self.unit_of_measure == "metric":
+            converted_weight = f"{weight * 0.1}kg"
+            converted_height = f"{height * 0.1}m"
+        else:
+            converted_weight = f"{weight * 0.220462}lbs"
+            converted_height = f"{height * 0.328084}ft" #not yet implemented
+        
+        return converted_height,converted_weight
+
+
     def watch_selected_pokemon(self, selected:str):
         height,weight,image_url,pokeimg_path = get_single_pokemon(selected.lower())
+        height,weight = self.convert_units(height,weight)
+
         self.query_one("#selected-pokemon-label", Label).update(f"Selected Pokemon: {selected}")
-        self.query_one("#pokemon-weight-label", Label).update(f"Pokemon Weight: {weight} hectograms")
-        self.query_one("#pokemon-height-label", Label).update(f"Pokemon Height: {height} decimetres")
+        self.query_one("#pokemon-weight-label", Label).update(f"Pokemon Weight: {weight}")
+        self.query_one("#pokemon-height-label", Label).update(f"Pokemon Height: {height}")
+
         self.pokeportrait_widget.query_one("#pokemon-portrait-url", Label).update(f"Image URL: {image_url}")
         self.pokeportrait_widget.image_path = pokeimg_path
               
@@ -106,9 +129,7 @@ class PykedexApp(App):
 
     pokemon_list = INITIAL_POKEMON_LIST
 
-    def __init__(self) -> None:
-        self.main_container = MainContainer()
-        super().__init__()
+    main_container = MainContainer()
     
     def compose(self) -> ComposeResult:
         yield Footer()
