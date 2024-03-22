@@ -64,7 +64,15 @@ class CachePrompt(ModalScreen):
             cache_them_all()
         else:
             self.app.pop_screen()
+s
+class Settings(ModalScreen):
+    def compose(self) -> ComposeResult:
+        yield Label("Farts and poo")
+        yield Button("Close", id="close")
 
+    def on_button_pressed(self, event:Button.Pressed):
+        if event.button.id == "close":
+            self.app.pop_screen()
 class MainContainer(ScrollableContainer):
     selected_pokemon: Reactive[str] = Reactive("")
 
@@ -75,20 +83,24 @@ class MainContainer(ScrollableContainer):
     def compose(self) -> ComposeResult:
         yield Label("Welcome to Pykedex!", id="test-label")
         yield Label("Select a Pokemon from the list to view its details.\n", id="instruction-label")
-
-        yield Label(f"Selected Pokemon:{self.selected_pokemon}", id="selected-pokemon-label")
+        yield Label(f"Selected Pokemon:", id="selected-pokemon-label")
+        yield Label("Pokémon Weight:", id="pokemon-weight-label") 
+        yield Label("Pokémon Height:", id="pokemon-height-label") 
         yield self.pokeportrait_widget
     
     def watch_selected_pokemon(self, selected:str):
-        self.query_one("#selected-pokemon-label", Label).update(f"Selected Pokemon: {selected}")
         height,weight,image_url,pokeimg_path = get_single_pokemon(selected.lower())
+        self.query_one("#selected-pokemon-label", Label).update(f"Selected Pokemon: {selected}")
+        self.query_one("#pokemon-weight-label", Label).update(f"Pokemon Weight: {weight} hectograms")
+        self.query_one("#pokemon-height-label", Label).update(f"Pokemon Height: {height} decimetres")
         self.pokeportrait_widget.query_one("#pokemon-portrait-url", Label).update(f"Image URL: {image_url}")
         self.pokeportrait_widget.image_path = pokeimg_path
               
 class PykedexApp(App):
     BINDINGS = [("q","quit","Quit"),
                 ("r","random_selection", "Random Pokémon"),
-                ("m","make_cache", "Cache All Pokémon")]
+                ("m","make_cache", "Cache All Pokémon"),
+                ("s","show_settings","Settings")]
 
     CSS_PATH = "styles/poke.tcss"
 
@@ -122,6 +134,9 @@ class PykedexApp(App):
         
     def action_make_cache(self) -> None:
         self.push_screen(CachePrompt())
+    
+    def action_show_settings(self) -> None:
+        self.push_screen(Settings())
 
 
 

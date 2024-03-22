@@ -64,8 +64,8 @@ OptionList {
     text-style: none;
 }
 
-.loading{
-    display:block;
+#pokemon-portrait-url{
+    display:none;
 }
 
 CachePrompt {

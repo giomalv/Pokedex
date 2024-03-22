@@ -47,7 +47,7 @@ def get_single_pokemon(lookup:str) -> Tuple[Optional[str], Optional[str], Option
         with open(cache_file,"w") as file:
             json.dump(data,file)
 
-    return weight, height, sprite_url, sprite_path
+    return height, weight, sprite_url, sprite_path
 
 def cache_them_all():
     list = get_pokemon_list()
